@@ -4,7 +4,7 @@ import SearchingVisualizer from './components/SearchingVisualizer';
 import TreeVisualizer from './components/TreeVisualizer';
 import GraphVisualizer from './components/GraphVisualizer';
 import Home from './components/Home';
-import { Search, House, BarChart2, GitFork, Network } from 'lucide-react';
+import { Search, House, BarChart2, GitFork, Network, Code2 } from 'lucide-react';
 
 function App() {
   const [activeTab, setActiveTab] = useState('home');
@@ -43,6 +43,12 @@ function App() {
           >
             <Network size={18} /> Graphs
           </button>
+          <button 
+            className={`capsule-link ${activeTab === 'custom' ? 'active' : ''}`}
+            onClick={() => setActiveTab('custom')}
+          >
+            <Code2 size={18} /> Custom Algo
+          </button>
         </nav>
       </div>
 
@@ -52,6 +58,12 @@ function App() {
         {activeTab === 'searching' && <SearchingVisualizer />}
         {activeTab === 'trees' && <TreeVisualizer />}
         {activeTab === 'graphs' && <GraphVisualizer />}
+        {activeTab === 'custom' && (
+          <div className="placeholder-panel">
+            <h2>Custom Algorithm</h2>
+            <p>Create and visualize your own algorithm in this tab.</p>
+          </div>
+        )}
       </main>
     </div>
   );
