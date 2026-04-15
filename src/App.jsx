@@ -3,6 +3,7 @@ import SortingVisualizer from './components/SortingVisualizer';
 import SearchingVisualizer from './components/SearchingVisualizer';
 import TreeVisualizer from './components/TreeVisualizer';
 import GraphVisualizer from './components/GraphVisualizer';
+import CustomAlgoVisualizer from './components/CustomAlgoVisualizer';
 import Home from './components/Home';
 import { Search, House, BarChart2, GitFork, Network, Code2 } from 'lucide-react';
 
@@ -58,12 +59,7 @@ function App() {
         {activeTab === 'searching' && <SearchingVisualizer />}
         {activeTab === 'trees' && <TreeVisualizer />}
         {activeTab === 'graphs' && <GraphVisualizer />}
-        {activeTab === 'custom' && (
-          <div className="placeholder-panel">
-            <h2>Custom Algorithm</h2>
-            <p>Create and visualize your own algorithm in this tab.</p>
-          </div>
-        )}
+        {activeTab === 'custom' && <CustomAlgoVisualizer />}
       </main>
     </div>
   );
