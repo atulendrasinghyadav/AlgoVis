@@ -144,10 +144,9 @@ function transpileCppToJs(code) {
 }
 
 function transpileJavaToJs(code) {
-  const helpers = extractJavaHelperFunctions(code);
   let transformed = extractBalancedBodyFromMatch(code, /public\s+static\s+void\s+main\s*\([^)]*\)\s*\{/m);
-  if (helpers.code.trim()) {
-    transformed = `${helpers.code}\n\n${transformed}`;
+  if (helpers.trim()) {
+    transformed = `${helpers}\n\n${transformed}`;
   }
   transformed = transformed.replace(/^\s*package\s+.*$/gm, '');
   transformed = transformed.replace(/^\s*import\s+.*$/gm, '');
