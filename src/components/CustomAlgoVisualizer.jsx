@@ -75,16 +75,14 @@ function normalizeJavaParamList(params) {
 }
 
 function extractJavaHelperFunctions(code) {
-  const methodRegex = /(?:public|private|protected)?\s*(?:static\s+)?(?:final\s+)?(?:synchronized\s+)?(?:[A-Za-z_][\w<>\[\],?]*)\s+([A-Za-z_][\w]*)\s*\(([^)]*)\)\s*(?:throws\s+[^{]+)?\s*\{/g;
+  const methodRegex = /(?:public|private|protected)?\s*(?:static\s+)?(?:final\s+)?(?:synchronized\s+)?(?:<[^>{\n]+>\s*)?(?:[A-Za-z_][\w<>\[\],.?]*\s+)+([A-Za-z_][\w]*)\s*\(([^)]*)\)\s*(?:throws\s+[^{]+)?\s*\{/g;
   const functions = [];
+  const names = [];
   let match;
 
   while ((match = methodRegex.exec(code)) !== null) {
     const methodName = match[1];
     if (methodName === 'main') continue;
-
-    const signatureSlice = code.slice(Math.max(0, match.index - 12), match.index);
-    if (/\b(class|interface|enum)\b/.test(signatureSlice)) continue;
 
     const openBraceIndex = code.indexOf('{', match.index);
     const block = extractBalancedBodyFromOpenBrace(code, openBraceIndex);
@@ -92,10 +90,14 @@ function extractJavaHelperFunctions(code) {
 
     const params = normalizeJavaParamList(match[2]);
     functions.push(`function ${methodName}(${params}) {${block.body}}`);
+    names.push(methodName);
     methodRegex.lastIndex = block.endIndex;
   }
 
-  return functions.join('\n\n');
+  return {
+    code: functions.join('\n\n'),
+    names,
+  };
 }
 
 function transpileCppToJs(code) {
@@ -144,8 +146,8 @@ function transpileCppToJs(code) {
 function transpileJavaToJs(code) {
   const helpers = extractJavaHelperFunctions(code);
   let transformed = extractBalancedBodyFromMatch(code, /public\s+static\s+void\s+main\s*\([^)]*\)\s*\{/m);
-  if (helpers.trim()) {
-    transformed = `${helpers}\n\n${transformed}`;
+  if (helpers.code.trim()) {
+    transformed = `${helpers.code}\n\n${transformed}`;
   }
   transformed = transformed.replace(/^\s*package\s+.*$/gm, '');
   transformed = transformed.replace(/^\s*import\s+.*$/gm, '');
@@ -187,6 +189,11 @@ function transpileJavaToJs(code) {
   transformed = transformed.replace(/\b(?:final\s+)?[A-Z][A-Za-z0-9_]*\s+([A-Za-z_][\w]*)\s*=/g, 'let $1 =');
   transformed = transformed.replace(/\b(?:final\s+)?[A-Z][A-Za-z0-9_]*\s+([A-Za-z_][\w]*)\s*;/g, 'let $1;');
   transformed = transformed.replace(/\(double\)\s*([A-Za-z_][\w]*)\s*\/\s*([A-Za-z_][\w]*)/g, '(Number($1) / $2)');
+
+  if (helpers.names.length > 0) {
+    const helperNamePattern = helpers.names.join('|');
+    transformed = transformed.replace(new RegExp(`\\b[A-Za-z_][\\w]*\\.(${helperNamePattern})\\s*\\(`, 'g'), '$1(');
+  }
 
   return transformed;
 }
