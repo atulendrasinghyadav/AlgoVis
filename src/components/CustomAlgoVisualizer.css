@@ -1,0 +1,541 @@
+.custom-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+}
+
+.custom-workbench {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(340px, 0.95fr);
+  gap: 1.15rem;
+}
+
+.custom-main-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.custom-lang-tabs {
+  margin-left: auto;
+  display: inline-flex;
+  gap: 0.35rem;
+  padding: 0.3rem;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.custom-lang-tab {
+  border: 0;
+  border-radius: 9999px;
+  background: transparent;
+  color: #d6d3d1;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.42rem 0.78rem;
+  cursor: pointer;
+}
+
+.custom-lang-tab.active {
+  background: #f59e0b;
+  color: #111827;
+}
+
+.custom-state-panel {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  padding: 1rem;
+  position: sticky;
+  top: 110px;
+  max-height: calc(100vh - 140px);
+  overflow: hidden;
+}
+
+.custom-state-head h3 {
+  margin: 0;
+  color: #f8fafc;
+  font-size: 1.02rem;
+}
+
+.custom-kicker {
+  margin: 0 0 0.3rem;
+  color: #fcd34d;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.custom-editor-panel,
+.custom-input-panel,
+.custom-run-panel {
+  padding: 1rem;
+}
+
+.custom-editor-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.8rem;
+}
+
+.custom-editor-head h3 {
+  margin: 0;
+  color: #f8fafc;
+  font-size: 1.02rem;
+}
+
+.custom-actions {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.custom-code-input {
+  width: 100%;
+  min-height: 340px;
+  resize: vertical;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(2, 6, 12, 0.92);
+  color: #e2e8f0;
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 0.8rem;
+  line-height: 1.55;
+  padding: 0.95rem 1rem;
+  outline: none;
+}
+
+.custom-code-input:focus {
+  border-color: rgba(245, 158, 11, 0.45);
+}
+
+.custom-input-panel h4 {
+  margin: 0;
+  color: #f8fafc;
+  font-size: 0.98rem;
+}
+
+.custom-input-note {
+  margin: 0.35rem 0 0.8rem;
+  color: #a8a29e;
+  font-size: 0.8rem;
+}
+
+.custom-input-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 0.65rem;
+}
+
+.custom-input-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.custom-input-item span {
+  color: #d6d3d1;
+  font-size: 0.8rem;
+}
+
+.custom-input-item input {
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: #f5f5f4;
+  padding: 0.5rem 0.65rem;
+  font-size: 0.82rem;
+}
+
+.custom-run-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.7rem;
+}
+
+.custom-step-counter {
+  margin-left: auto;
+  color: #d6d3d1;
+  font-size: 0.85rem;
+}
+
+.custom-error {
+  margin-top: 0.4rem;
+  color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.45);
+  background: rgba(127, 29, 29, 0.22);
+  border-radius: 10px;
+  padding: 0.5rem 0.65rem;
+  display: inline-flex;
+  gap: 0.45rem;
+  align-items: center;
+  font-size: 0.82rem;
+}
+
+.custom-output {
+  margin-top: 0.8rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(2, 6, 12, 0.7);
+  overflow: hidden;
+}
+
+.custom-output-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.7rem;
+  color: #f8fafc;
+  font-size: 0.82rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.custom-output pre {
+  margin: 0;
+  padding: 0.7rem;
+  color: #e2e8f0;
+  font-size: 0.78rem;
+  line-height: 1.5;
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+  white-space: pre-wrap;
+}
+
+.custom-code-view {
+  min-height: 220px;
+  max-height: 44vh;
+  overflow: auto;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(2, 6, 12, 0.92);
+}
+
+.custom-code-view.editor-mode {
+  min-height: 340px;
+}
+
+.custom-line {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr);
+  gap: 0.6rem;
+  padding: 0.28rem 0.7rem;
+}
+
+.custom-line.active {
+  background: rgba(245, 158, 11, 0.14);
+}
+
+.custom-line-no {
+  color: #78716c;
+  text-align: right;
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 0.75rem;
+}
+
+.custom-line-text {
+  color: #d6d3d1;
+  white-space: pre;
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 0.75rem;
+}
+
+.custom-vars-panel {
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+  padding: 0.75rem;
+  overflow: auto;
+}
+
+.custom-note {
+  color: #fde68a;
+  font-size: 0.8rem;
+  margin-bottom: 0.55rem;
+}
+
+.custom-runtime-meta {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.55rem;
+}
+
+.custom-runtime-meta span {
+  border: 1px solid rgba(252, 211, 77, 0.25);
+  background: rgba(252, 211, 77, 0.08);
+  color: #fef3c7;
+  border-radius: 9999px;
+  font-size: 0.72rem;
+  padding: 0.2rem 0.5rem;
+}
+
+.custom-vars-grid {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.custom-var-item {
+  display: grid;
+  grid-template-columns: 110px minmax(0, 1fr);
+  gap: 0.55rem;
+  align-items: center;
+}
+
+.custom-var-name {
+  color: #d6d3d1;
+  font-size: 0.8rem;
+}
+
+.custom-var-render {
+  min-width: 0;
+}
+
+.custom-var-value {
+  color: #e2e8f0;
+  background: rgba(2, 6, 12, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 0.35rem 0.45rem;
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 0.74rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.custom-muted {
+  color: #a8a29e;
+  font-size: 0.82rem;
+  margin: 0;
+}
+
+.custom-array-vis {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.custom-array-vis.stack {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.custom-array-cell {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 38px;
+  padding: 0.2rem 0.35rem;
+  border-radius: 8px;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  background: rgba(245, 158, 11, 0.12);
+}
+
+.custom-array-tag {
+  color: #fde68a;
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.custom-array-index {
+  color: #fcd34d;
+  font-size: 0.62rem;
+  line-height: 1;
+}
+
+.custom-array-item {
+  color: #f8fafc;
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 0.72rem;
+  line-height: 1.15;
+}
+
+.custom-obj-vis {
+  display: grid;
+  gap: 0.35rem;
+  width: 100%;
+}
+
+.custom-obj-row {
+  display: grid;
+  grid-template-columns: 84px minmax(0, 1fr);
+  gap: 0.45rem;
+  align-items: center;
+}
+
+.custom-obj-key {
+  color: #93c5fd;
+  font-size: 0.74rem;
+}
+
+.custom-obj-value {
+  min-width: 0;
+}
+
+.custom-map-vis,
+.custom-graph-vis {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.custom-map-row,
+.custom-graph-row {
+  display: grid;
+  grid-template-columns: minmax(60px, auto) 28px minmax(0, 1fr);
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.custom-map-key {
+  color: #93c5fd;
+  font-size: 0.74rem;
+}
+
+.custom-map-arrow {
+  color: #fcd34d;
+  font-size: 0.72rem;
+  text-align: center;
+}
+
+.custom-map-value {
+  min-width: 0;
+}
+
+.custom-set-vis {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.custom-set-pill {
+  border-radius: 9999px;
+  border: 1px solid rgba(147, 197, 253, 0.35);
+  background: rgba(147, 197, 253, 0.1);
+  color: #dbeafe;
+  padding: 0.25rem 0.55rem;
+  font-size: 0.72rem;
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+}
+
+.custom-seq-vis {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  flex-wrap: wrap;
+}
+
+.custom-ll-node {
+  display: inline-grid;
+  grid-template-columns: auto auto;
+  border: 1px solid rgba(52, 211, 153, 0.45);
+  border-radius: 8px;
+  overflow: hidden;
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 0.72rem;
+}
+
+.custom-ll-val {
+  background: rgba(16, 185, 129, 0.2);
+  color: #d1fae5;
+  padding: 0.24rem 0.5rem;
+  border-right: 1px solid rgba(52, 211, 153, 0.4);
+}
+
+.custom-ll-next {
+  background: rgba(2, 6, 12, 0.9);
+  color: #99f6e4;
+  padding: 0.24rem 0.45rem;
+  text-transform: uppercase;
+  font-size: 0.64rem;
+  letter-spacing: 0.03em;
+}
+
+.custom-seq-node {
+  border: 1px solid rgba(52, 211, 153, 0.35);
+  background: rgba(16, 185, 129, 0.16);
+  color: #d1fae5;
+  border-radius: 8px;
+  padding: 0.2rem 0.45rem;
+  font-size: 0.74rem;
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+}
+
+.custom-seq-arrow,
+.custom-seq-null {
+  color: #a8a29e;
+  font-size: 0.72rem;
+}
+
+.custom-tree-vis {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.custom-tree-level {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.custom-tree-node {
+  border-radius: 8px;
+  border: 1px solid rgba(244, 114, 182, 0.4);
+  background: rgba(244, 114, 182, 0.16);
+  color: #fce7f3;
+  padding: 0.18rem 0.45rem;
+  font-size: 0.72rem;
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+}
+
+.custom-matrix-vis {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.custom-matrix-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.custom-matrix-label {
+  color: #a8a29e;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.custom-input-snapshot {
+  margin-top: 0.8rem;
+  padding-top: 0.65rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.custom-snapshot-title {
+  margin: 0 0 0.45rem;
+  color: #fcd34d;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 1120px) {
+  .custom-workbench {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .custom-state-panel {
+    position: static;
+    max-height: none;
+  }
+}
