@@ -143,8 +143,52 @@ function transpileCppToJs(code) {
   return transformed;
 }
 
+function extractJavaStaticHelpers(code) {
+  const helpers = [];
+  const names = [];
+  const methodRegex = /(?:public|private|protected)?\s*static\s+[A-Za-z_][\w<>\[\]]*\s+([A-Za-z_][\w]*)\s*\(([^)]*)\)\s*\{/g;
+  let match;
+
+  while ((match = methodRegex.exec(code)) !== null) {
+    const methodName = match[1];
+    if (methodName === 'main') continue;
+
+    const openBraceIndex = code.indexOf('{', match.index);
+    if (openBraceIndex < 0) continue;
+
+    let depth = 1;
+    let cursor = openBraceIndex + 1;
+    while (cursor < code.length && depth > 0) {
+      const ch = code[cursor];
+      if (ch === '{') depth += 1;
+      if (ch === '}') depth -= 1;
+      cursor += 1;
+    }
+    if (depth !== 0) continue;
+
+    const rawBody = code.slice(openBraceIndex + 1, cursor - 1);
+    const paramNames = String(match[2])
+      .split(',')
+      .map((part) => part.trim())
+      .filter(Boolean)
+      .map((part) => {
+        const clean = part.replace(/\[\]/g, ' ').trim().split(/\s+/);
+        return clean[clean.length - 1];
+      })
+      .filter((name) => /^[A-Za-z_][\w]*$/.test(name));
+
+    helpers.push(`function ${methodName}(${paramNames.join(', ')}) {\n${rawBody}\n}`);
+    names.push(methodName);
+  }
+
+  return {
+    code: helpers.join('\n\n'),
+    names,
+  };
+}
+
 function transpileJavaToJs(code) {
-  const helpers = extractJavaHelperFunctions(code);
+  const helpers = extractJavaStaticHelpers(code);
   let transformed = extractBalancedBodyFromMatch(code, /public\s+static\s+void\s+main\s*\([^)]*\)\s*\{/m);
   if (helpers.code.trim()) {
     transformed = `${helpers.code}\n\n${transformed}`;
@@ -154,9 +198,19 @@ function transpileJavaToJs(code) {
   transformed = transformed.replace(/^\s*public\s+class\s+.*$/gm, '');
   transformed = transformed.replace(/^\s*public\s+static\s+void\s+main\s*\([^)]*\)\s*\{\s*$/gm, '');
   transformed = transformed.replace(/^\s*Scanner\s+\w+\s*=\s*new\s+Scanner\s*\([^)]*\)\s*;\s*$/gm, '');
+  transformed = transformed.replace(/^\s*[A-Za-z_][\w]*\s*\.close\s*\(\s*\)\s*;\s*$/gm, '');
 
   transformed = transformed.replace(/System\.out\.println\s*\(([^)]*)\)\s*;/g, 'print($1);');
   transformed = transformed.replace(/System\.out\.print\s*\(([^)]*)\)\s*;/g, 'print($1);');
+
+  transformed = transformed.replace(/\bStringBuilder\s+([A-Za-z_][\w]*)\s*=\s*new\s+StringBuilder\s*\(([^)]*)\)\s*;/g, (_, varName, initExpr) => {
+    const init = String(initExpr).trim();
+    if (!init) return `let ${varName} = "";`;
+    return `let ${varName} = String(${init});`;
+  });
+  transformed = transformed.replace(/\bStringBuilder\s+([A-Za-z_][\w]*)\s*;/g, 'let $1 = "";');
+  transformed = transformed.replace(/([A-Za-z_][\w]*)\.append\(([^;]+)\)\s*;/g, '$1 += String($2);');
+  transformed = transformed.replace(/([A-Za-z_][\w]*)\.toString\(\)/g, 'String($1)');
 
   transformed = transformed.replace(/\bStack\s*<[^>]+>\s+([A-Za-z_][\w]*)\s*=\s*new\s+Stack\s*<[^>]*>\s*\(\s*\)\s*;/g, 'let $1 = [];');
   transformed = transformed.replace(/\bStack\s*<[^>]+>\s+([A-Za-z_][\w]*)\s*;/g, 'let $1 = [];');
