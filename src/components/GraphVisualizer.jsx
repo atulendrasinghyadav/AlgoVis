@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Play, Pause, Square, ArrowLeft, Clock, Route, Waypoints, Waves, Mountain, Eraser, Brush, Flag, LocateFixed, ChevronRight, RotateCcw, Trash2, Shuffle, Code2 } from 'lucide-react';
+import { Play, Pause, Square, ArrowLeft, Clock, Route, Waypoints, Waves, Mountain, Eraser, Brush, Flag, LocateFixed, ChevronRight, RotateCcw, Trash2, Shuffle, Code2, CheckCircle2 } from 'lucide-react';
+import { markAlgoAsCompleted } from '../firebase/progressService';
 import { runAStar, runBFS, runDFS, runDijkstra } from '../graphAlgorithms/pathfindingAlgorithms';
 import './GraphVisualizer.css';
 
@@ -581,7 +582,7 @@ function cloneGrid(grid) {
   return grid.map((r) => r.map((c) => ({ ...c })));
 }
 
-export default function GraphVisualizer({ user, onNavigate }) {
+export default function GraphVisualizer({ user, onNavigate, progress }) {
   const [selectedAlgo, setSelectedAlgo] = useState(null);
   const [hoveredCard, setHoveredCard] = useState(null);
   const [speedMultiplier, setSpeedMultiplier] = useState(6);
@@ -804,6 +805,12 @@ export default function GraphVisualizer({ user, onNavigate }) {
 
   const animateRun = async () => {
     if (!selectedAlgo) return;
+
+    // Mark as completed in Firebase
+    if (user) {
+      markAlgoAsCompleted(user.uid, 'graphs', selectedAlgo);
+    }
+
     setGrid((prev) =>
       prev.map((row) => row.map((cell) => ({ ...cell, state: 'idle' })))
     );
@@ -897,6 +904,12 @@ export default function GraphVisualizer({ user, onNavigate }) {
               <div className="algo-card-head">
                 <div className="algo-card-icon" style={{ color: data.color }}>{data.icon}</div>
                 <span className="algo-card-name">{data.name}</span>
+                {progress?.graphs?.[key] && (
+                  <div className="algo-card-status">
+                    <CheckCircle2 size={13} strokeWidth={3} className="completed-icon" />
+                    <span>Visualized</span>
+                  </div>
+                )}
               </div>
 
               <p className="algo-card-tagline">{data.tagline}</p>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Play, Pause, Square, Shuffle, ArrowLeft, Clock, CornerDownRight, Trash2, Crosshair, FastForward, Navigation, Layers, ChevronRight, Code2 } from 'lucide-react';
+import { Play, Pause, Square, Shuffle, ArrowLeft, Clock, CornerDownRight, Trash2, Crosshair, FastForward, Navigation, Layers, ChevronRight, Code2, CheckCircle2 } from 'lucide-react';
+import { markAlgoAsCompleted } from '../firebase/progressService';
 import * as treeAlgorithms from '../treeAlgorithms/treeAlgorithms';
 import './TreeVisualizer.css';
 
@@ -197,7 +198,7 @@ function formatVariableBadge(variable) {
   return `${variable.name}: ${formatVariableValue(variable.value)}`;
 }
 
-export default function TreeVisualizer({ user, onNavigate }) {
+export default function TreeVisualizer({ user, onNavigate, progress }) {
   const [selectedAlgo, setSelectedAlgo] = useState(null);
   const [treeRoot, setTreeRoot] = useState(null);
   const [speedMultiplier, setSpeedMultiplier] = useState(5);
@@ -473,6 +474,11 @@ export default function TreeVisualizer({ user, onNavigate }) {
             const animations = treeAlgorithms.getPostOrderAnimations(treeRoot);
             runAnimation(animations);
         }
+
+        // Mark as completed in Firebase
+        if (user) {
+          markAlgoAsCompleted(user.uid, 'trees', selectedAlgo);
+        }
     } catch (e) {
         console.error(e);
         setStatusMessage('Error executing action.');
@@ -522,6 +528,12 @@ export default function TreeVisualizer({ user, onNavigate }) {
               <div className="algo-card-head">
                 <div className="algo-card-icon" style={{ color: data.color }}>{data.icon}</div>
                 <span className="algo-card-name">{data.name}</span>
+                {progress?.trees?.[key] && (
+                  <div className="algo-card-status">
+                    <CheckCircle2 size={13} strokeWidth={3} className="completed-icon" />
+                    <span>Visualized</span>
+                  </div>
+                )}
               </div>
               <p className="algo-card-tagline">{data.tagline}</p>
               <p className="algo-card-desc">{data.description}</p>

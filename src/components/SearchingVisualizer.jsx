@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Play, Pause, Square, Shuffle, ArrowLeft, Clock, Search, Scissors, AlertTriangle, ChevronRight, Code2 } from 'lucide-react';
+import { Play, Pause, Square, Shuffle, ArrowLeft, Clock, Search, Scissors, AlertTriangle, ChevronRight, Code2, CheckCircle2 } from 'lucide-react';
+import { markAlgoAsCompleted } from '../firebase/progressService';
 import * as searchingAlgorithms from '../searchingAlgorithms/searchingAlgorithms';
 import './SearchingVisualizer.css';
 
@@ -111,7 +112,7 @@ int main() {
   }
 };
 
-export default function SearchingVisualizer({ user, onNavigate }) {
+export default function SearchingVisualizer({ user, onNavigate, progress }) {
   const [selectedAlgo, setSelectedAlgo] = useState(null);
   const [array, setArray] = useState([]);
   const [arraySize, setArraySize] = useState(50);
@@ -255,7 +256,18 @@ export default function SearchingVisualizer({ user, onNavigate }) {
       return;
     }
     
-    const animations = searchingAlgorithms[selectedAlgo]([...array], targetValue);
+    let animations = [];
+    if (selectedAlgo === 'linear') {
+      animations = searchingAlgorithms.getLinearSearchAnimations([...array], targetValue);
+    } else if (selectedAlgo === 'binary') {
+      animations = searchingAlgorithms.getBinarySearchAnimations([...array], targetValue);
+    }
+    
+    // Mark as completed in Firebase
+    if (user) {
+      markAlgoAsCompleted(user.uid, 'searching', selectedAlgo);
+    }
+    
     animateSearch(animations);
   };
 
@@ -304,6 +316,12 @@ export default function SearchingVisualizer({ user, onNavigate }) {
                   {data.icon}
                 </div>
                 <span className="algo-card-name">{data.name}</span>
+                {progress?.searching?.[key] && (
+                  <div className="algo-card-status">
+                    <CheckCircle2 size={13} strokeWidth={3} className="completed-icon" />
+                    <span>Visualized</span>
+                  </div>
+                )}
               </div>
 
               <p className="algo-card-tagline">{data.tagline}</p>

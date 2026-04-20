@@ -1,5 +1,6 @@
 import React, { useMemo, useState, useEffect, useRef } from 'react';
 import { Play, Pause, StepForward, StepBack, RotateCcw, Terminal, Code2, CircleAlert } from 'lucide-react';
+import { markAlgoAsCompleted } from '../firebase/progressService';
 import './CustomAlgoVisualizer.css';
 
 const DEFAULT_JS_CODE = `// JavaScript runner\n// APIs: readInput(name, type), step(line, vars, note), print(...args)\n\nconst n = readInput("n", "int");\nconst arr = [];\n\nfor (let i = 0; i < n; i++) {\n  const value = readInput(\`arr[\${i}]\`, "number");\n  arr.push(value);\n  step(9, { i, value, arr: [...arr] }, "Input captured");\n}\n\nlet sum = 0;\nfor (let i = 0; i < arr.length; i++) {\n  sum += arr[i];\n  step(15, { i, current: arr[i], sum, n, arr: [...arr] }, "Accumulating sum");\n}\n\nconst average = sum / n;\nstep(19, { sum, n, average }, "Computed result");\nprint("Average =", average);`;
@@ -751,7 +752,7 @@ function StructuredValue({ value, varName = '', depth = 0 }) {
   return <code className="custom-var-value">{formatScalar(value)}</code>;
 }
 
-export default function CustomAlgoVisualizer({ user, onNavigate }) {
+export default function CustomAlgoVisualizer({ user, onNavigate, progress }) {
   const [language, setLanguage] = useState('javascript');
   const [codeByLanguage, setCodeByLanguage] = useState({
     javascript: DEFAULT_JS_CODE,
@@ -846,6 +847,11 @@ export default function CustomAlgoVisualizer({ user, onNavigate }) {
     }
     setError('');
     setIsPlaying(false);
+    
+    // Mark as completed in Firebase
+    if (user) {
+      markAlgoAsCompleted(user.uid, 'custom', language);
+    }
 
     const missingKeys = requiredInputKeys.filter((key) => String(inputValues[key] ?? '').trim() === '');
     if (missingKeys.length > 0) {
