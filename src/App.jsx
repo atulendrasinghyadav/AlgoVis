@@ -14,6 +14,7 @@ import { Search, House, BarChart2, GitFork, Network, Code2, UserCircle, LogOut }
 function App() {
   const [activeTab, setActiveTab] = useState('home');
   const [user, setUser] = useState(null);
+  const [authMessage, setAuthMessage] = useState('');
 
   React.useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -31,43 +32,48 @@ function App() {
     }
   };
 
+  const handleTabChange = (tab, message = '') => {
+    setActiveTab(tab);
+    setAuthMessage(message);
+  };
+
   return (
     <div className="app-container">
       <div className="header-container">
         <nav className="capsule-nav">
           <button 
             className={`capsule-link ${activeTab === 'home' ? 'active' : ''}`}
-            onClick={() => setActiveTab('home')}
+            onClick={() => handleTabChange('home')}
           >
             <House size={18} /> Home
           </button>
           <button 
             className={`capsule-link ${activeTab === 'sorting' ? 'active' : ''}`}
-            onClick={() => setActiveTab('sorting')}
+            onClick={() => handleTabChange('sorting')}
           >
             <BarChart2 size={18} /> Sorting
           </button>
           <button 
             className={`capsule-link ${activeTab === 'searching' ? 'active' : ''}`}
-            onClick={() => setActiveTab('searching')}
+            onClick={() => handleTabChange('searching')}
           >
             <Search size={18} /> Searching
           </button>
           <button 
             className={`capsule-link ${activeTab === 'trees' ? 'active' : ''}`}
-            onClick={() => setActiveTab('trees')}
+            onClick={() => handleTabChange('trees')}
           >
             <GitFork size={18} /> Trees
           </button>
           <button 
             className={`capsule-link ${activeTab === 'graphs' ? 'active' : ''}`}
-            onClick={() => setActiveTab('graphs')}
+            onClick={() => handleTabChange('graphs')}
           >
             <Network size={18} /> Graphs
           </button>
           <button 
             className={`capsule-link ${activeTab === 'custom' ? 'active' : ''}`}
-            onClick={() => setActiveTab('custom')}
+            onClick={() => handleTabChange('custom')}
           >
             <Code2 size={18} /> Custom Algo
           </button>
@@ -81,7 +87,7 @@ function App() {
           ) : (
             <button 
               className={`capsule-link get-started ${activeTab === 'auth' ? 'active' : ''}`}
-              onClick={() => setActiveTab('auth')}
+              onClick={() => handleTabChange('auth')}
             >
               <UserCircle size={18} /> Get Started
             </button>
@@ -90,14 +96,14 @@ function App() {
       </div>
 
       <main className="main-content">
-        {activeTab === 'home' && <Home onNavigate={setActiveTab} />}
-        {activeTab === 'sorting' && <SortingVisualizer />}
-        {activeTab === 'searching' && <SearchingVisualizer />}
-        {activeTab === 'trees' && <TreeVisualizer />}
-        {activeTab === 'graphs' && <GraphVisualizer />}
-        {activeTab === 'custom' && <CustomAlgoVisualizer />}
-        {activeTab === 'about' && <AboutUs onNavigate={setActiveTab} />}
-        {activeTab === 'auth' && <Auth onNavigate={setActiveTab} />}
+        {activeTab === 'home' && <Home onNavigate={handleTabChange} />}
+        {activeTab === 'sorting' && <SortingVisualizer user={user} onNavigate={handleTabChange} />}
+        {activeTab === 'searching' && <SearchingVisualizer user={user} onNavigate={handleTabChange} />}
+        {activeTab === 'trees' && <TreeVisualizer user={user} onNavigate={handleTabChange} />}
+        {activeTab === 'graphs' && <GraphVisualizer user={user} onNavigate={handleTabChange} />}
+        {activeTab === 'custom' && <CustomAlgoVisualizer user={user} onNavigate={handleTabChange} />}
+        {activeTab === 'about' && <AboutUs onNavigate={handleTabChange} />}
+        {activeTab === 'auth' && <Auth onNavigate={handleTabChange} authMessage={authMessage} />}
       </main>
     </div>
   );

@@ -577,12 +577,11 @@ function buildGrid(startPos, endPos) {
     Array.from({ length: COLS }, (_, col) => createCell(row, col, startPos, endPos))
   );
 }
-
 function cloneGrid(grid) {
   return grid.map((r) => r.map((c) => ({ ...c })));
 }
 
-export default function GraphVisualizer() {
+export default function GraphVisualizer({ user, onNavigate }) {
   const [selectedAlgo, setSelectedAlgo] = useState(null);
   const [hoveredCard, setHoveredCard] = useState(null);
   const [speedMultiplier, setSpeedMultiplier] = useState(6);
@@ -882,7 +881,13 @@ export default function GraphVisualizer() {
             <div
               key={key}
               className={`algo-card ${hoveredCard === key ? 'hovered' : ''}`}
-              onClick={() => setSelectedAlgo(key)}
+              onClick={() => {
+                if (!user) {
+                  onNavigate('auth', 'You have to login first before starting visualization.');
+                } else {
+                  setSelectedAlgo(key);
+                }
+              }}
               onMouseEnter={() => setHoveredCard(key)}
               onMouseLeave={() => setHoveredCard(null)}
               style={{ '--card-accent': data.color }}

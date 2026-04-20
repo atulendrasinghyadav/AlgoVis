@@ -319,16 +319,16 @@ public class QuickSort {
   }
 };
 
-export default function SortingVisualizer() {
+export default function SortingVisualizer({ user, onNavigate }) {
   const [selectedAlgo, setSelectedAlgo] = useState(null);
   const [array, setArray] = useState([]);
   const [arraySize, setArraySize] = useState(50);
   const [speedMultiplier, setSpeedMultiplier] = useState(5);
   const [isSorting, setIsSorting] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
+  const [hoveredCard, setHoveredCard] = useState(null);
   const [dataDist, setDataDist] = useState('random');
   const [customInput, setCustomInput] = useState('');
-  const [hoveredCard, setHoveredCard] = useState(null);
   const [showCodePanel, setShowCodePanel] = useState(true);
   const [codeLanguage, setCodeLanguage] = useState('cpp');
 
@@ -346,10 +346,6 @@ export default function SortingVisualizer() {
 
   useEffect(() => {
     if (selectedAlgo) {
-      // If we switch algorithms while sorting, cancel the active run
-      if (isSorting) {
-        cancelSort();
-      }
       setShowCodePanel(true);
       setCodeLanguage('cpp');
       resetArray();
@@ -541,7 +537,13 @@ export default function SortingVisualizer() {
             <div
               key={key}
               className={`algo-card ${hoveredCard === key ? 'hovered' : ''}`}
-              onClick={() => setSelectedAlgo(key)}
+              onClick={() => {
+                if (!user) {
+                  onNavigate('auth', 'You have to login first before starting visualization.');
+                } else {
+                  setSelectedAlgo(key);
+                }
+              }}
               onMouseEnter={() => setHoveredCard(key)}
               onMouseLeave={() => setHoveredCard(null)}
               style={{ '--card-accent': data.color }}
