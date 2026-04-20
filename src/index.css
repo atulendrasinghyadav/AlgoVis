@@ -63,10 +63,12 @@ body {
 .header-container {
   display: flex;
   justify-content: center;
+  align-items: center;
   position: sticky;
   top: 1.5rem;
   z-index: 100;
   width: 100%;
+  padding: 0 2rem;
   pointer-events: none;
 }
 
@@ -83,7 +85,6 @@ body {
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
   pointer-events: auto;
 }
-
 .capsule-logo {
   font-weight: 700;
   font-size: 1rem;
@@ -123,6 +124,34 @@ body {
   color: #000;
   background: linear-gradient(135deg, #facc15 0%, #eab308 100%);
   box-shadow: 0 4px 15px var(--accent-glow);
+}
+
+.capsule-divider {
+  width: 1px;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 0 0.5rem;
+}
+
+.capsule-link.get-started {
+  background: rgba(234, 179, 8, 0.1);
+  color: #eab308;
+  border: 1px solid rgba(234, 179, 8, 0.2);
+}
+
+.capsule-link.get-started:hover {
+  background: rgba(234, 179, 8, 0.2);
+  color: #facc15;
+}
+
+.capsule-link.get-started.active {
+  background: linear-gradient(135deg, #facc15 0%, #eab308 100%);
+  color: #000;
+}
+
+.capsule-link.logout:hover {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
 }
 
 .main-content {
