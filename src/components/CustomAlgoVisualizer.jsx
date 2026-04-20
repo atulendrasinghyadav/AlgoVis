@@ -751,7 +751,7 @@ function StructuredValue({ value, varName = '', depth = 0 }) {
   return <code className="custom-var-value">{formatScalar(value)}</code>;
 }
 
-export default function CustomAlgoVisualizer() {
+export default function CustomAlgoVisualizer({ user, onNavigate }) {
   const [language, setLanguage] = useState('javascript');
   const [codeByLanguage, setCodeByLanguage] = useState({
     javascript: DEFAULT_JS_CODE,
@@ -840,6 +840,10 @@ export default function CustomAlgoVisualizer() {
   };
 
   const runCode = () => {
+    if (!user) {
+      onNavigate('auth', 'You have to login first before starting visualization.');
+      return;
+    }
     setError('');
     setIsPlaying(false);
 
@@ -1091,7 +1095,13 @@ export default function CustomAlgoVisualizer() {
                 <StepBack size={16} />
               </button>
               <button
-                onClick={() => setIsPlaying((prev) => !prev)}
+                onClick={() => {
+                  if (!user) {
+                    onNavigate('auth', 'You have to login first before starting visualization.');
+                  } else {
+                    setIsPlaying((prev) => !prev);
+                  }
+                }}
                 disabled={steps.length <= 1 || currentStepIndex >= steps.length - 1}
                 className="icon-btn"
               >

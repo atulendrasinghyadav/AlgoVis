@@ -9,7 +9,7 @@ import {
 import { Mail, Lock, User, ArrowRight, Loader2 } from 'lucide-react';
 import './Auth.css';
 
-export default function Auth({ onNavigate }) {
+export default function Auth({ onNavigate, authMessage }) {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -125,6 +125,7 @@ export default function Auth({ onNavigate }) {
               <h2>Welcome Back</h2>
               <p>Enter your details to continue</p>
             </div>
+            {authMessage && <div className="auth-warning">{authMessage}</div>}
             {isLogin && error && <div className="auth-error">{error}</div>}
             {renderForm('login')}
           </div>
@@ -135,6 +136,7 @@ export default function Auth({ onNavigate }) {
               <h2>Create Account</h2>
               <p>Join the community and start learning</p>
             </div>
+            {authMessage && <div className="auth-warning">{authMessage}</div>}
             {!isLogin && error && <div className="auth-error">{error}</div>}
             {renderForm('register')}
           </div>

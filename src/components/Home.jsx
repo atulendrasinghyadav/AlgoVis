@@ -63,7 +63,7 @@ export default function Home({ onNavigate }) {
           AlgoVis is a globally accessible learning assistant that keeps your engineering knowledge in orbit with seamless animations, instant playback, and smarter data structures.
         </p>
         <div className="hero-actions">
-          <button className="h-btn-outline" onClick={() => onNavigate('graphs')}>
+          <button className="h-btn-outline" onClick={() => onNavigate('sorting')}>
             Explore Features
           </button>
           <button className="h-btn-primary" onClick={() => onNavigate('sorting')}>

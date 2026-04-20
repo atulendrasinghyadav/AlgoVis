@@ -197,7 +197,7 @@ function formatVariableBadge(variable) {
   return `${variable.name}: ${formatVariableValue(variable.value)}`;
 }
 
-export default function TreeVisualizer() {
+export default function TreeVisualizer({ user, onNavigate }) {
   const [selectedAlgo, setSelectedAlgo] = useState(null);
   const [treeRoot, setTreeRoot] = useState(null);
   const [speedMultiplier, setSpeedMultiplier] = useState(5);
@@ -507,7 +507,13 @@ export default function TreeVisualizer() {
             <div
               key={key}
               className={`algo-card ${hoveredCard === key ? 'hovered' : ''}`}
-              onClick={() => setSelectedAlgo(key)}
+              onClick={() => {
+                if (!user) {
+                  onNavigate('auth', 'You have to login first before starting visualization.');
+                } else {
+                  setSelectedAlgo(key);
+                }
+              }}
               onMouseEnter={() => setHoveredCard(key)}
               onMouseLeave={() => setHoveredCard(null)}
               style={{ '--card-accent': data.color }}

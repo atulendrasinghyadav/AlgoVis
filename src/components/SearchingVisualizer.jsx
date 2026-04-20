@@ -111,7 +111,7 @@ int main() {
   }
 };
 
-export default function SearchingVisualizer() {
+export default function SearchingVisualizer({ user, onNavigate }) {
   const [selectedAlgo, setSelectedAlgo] = useState(null);
   const [array, setArray] = useState([]);
   const [arraySize, setArraySize] = useState(50);
@@ -137,7 +137,6 @@ export default function SearchingVisualizer() {
 
   useEffect(() => {
     if (selectedAlgo) {
-      if (isSearching) cancelSearch();
       setShowCodePanel(true);
       setCodeLanguage('cpp');
       resetArray();
@@ -148,6 +147,10 @@ export default function SearchingVisualizer() {
     cancelRef.current = true;
     setIsSearching(false);
     setIsPaused(false);
+    const bars = document.getElementsByClassName('search-array-bar');
+    for (let bar of bars) {
+      bar.classList.remove('scanning', 'found', 'eliminated');
+    }
   };
 
   const randomIntFromInterval = (min, max) => {
@@ -238,14 +241,12 @@ export default function SearchingVisualizer() {
         for (let idx of indices) {
            arrayBars[idx].classList.add('eliminated');
         }
-        await sleep(actualDelay);
+        await sleep(actualDelay); 
       }
     }
 
-    if (!cancelRef.current) {
-      setIsSearching(false);
-      setIsPaused(false);
-    }
+    setIsSearching(false);
+    setIsPaused(false);
   };
 
   const playAlgorithm = () => {
@@ -253,14 +254,8 @@ export default function SearchingVisualizer() {
       setIsPaused(!isPaused);
       return;
     }
-
-    let animations = [];
-    if (selectedAlgo === 'linear') {
-      animations = searchingAlgorithms.getLinearSearchAnimations(array, targetValue);
-    } else if (selectedAlgo === 'binary') {
-      animations = searchingAlgorithms.getBinarySearchAnimations(array, targetValue);
-    }
     
+    const animations = searchingAlgorithms[selectedAlgo]([...array], targetValue);
     animateSearch(animations);
   };
 
@@ -278,13 +273,12 @@ export default function SearchingVisualizer() {
   const maxBarWidth = 40;
   const calculatedWidth = Math.max(3, Math.min(maxBarWidth, (800 / arraySize) - 4));
 
-  /* ─── Card Selection View ─── */
   if (!selectedAlgo) {
     return (
-      <div className="sorting-page">
+      <div className="sorting-page searching-page">
         <div className="sorting-page-header">
           <h2>Searching Algorithms</h2>
-          <p>Select a search algorithm to visualize how it hunts for a target element.</p>
+          <p>Watch how different strategies locate a target value within an array of data.</p>
         </div>
 
         <div className="algo-cards-grid">
@@ -292,7 +286,13 @@ export default function SearchingVisualizer() {
             <div
               key={key}
               className={`algo-card ${hoveredCard === key ? 'hovered' : ''}`}
-              onClick={() => setSelectedAlgo(key)}
+              onClick={() => {
+                if (!user) {
+                  onNavigate('auth', 'You have to login first before starting visualization.');
+                } else {
+                  setSelectedAlgo(key);
+                }
+              }}
               onMouseEnter={() => setHoveredCard(key)}
               onMouseLeave={() => setHoveredCard(null)}
               style={{ '--card-accent': data.color }}
