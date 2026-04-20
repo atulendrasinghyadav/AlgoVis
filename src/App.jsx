@@ -5,10 +5,31 @@ import TreeVisualizer from './components/TreeVisualizer';
 import GraphVisualizer from './components/GraphVisualizer';
 import CustomAlgoVisualizer from './components/CustomAlgoVisualizer';
 import Home from './components/Home';
-import { Search, House, BarChart2, GitFork, Network, Code2 } from 'lucide-react';
+import AboutUs from './components/AboutUs';
+import Auth from './components/Auth';
+import { auth } from './firebase/firebaseConfig';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { Search, House, BarChart2, GitFork, Network, Code2, UserCircle, LogOut } from 'lucide-react';
 
 function App() {
   const [activeTab, setActiveTab] = useState('home');
+  const [user, setUser] = useState(null);
+
+  React.useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      setActiveTab('home');
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
 
   return (
     <div className="app-container">
@@ -50,6 +71,21 @@ function App() {
           >
             <Code2 size={18} /> Custom Algo
           </button>
+          
+          <div className="capsule-divider"></div>
+
+          {user ? (
+            <button className="capsule-link logout" onClick={handleLogout}>
+              <LogOut size={18} /> Logout
+            </button>
+          ) : (
+            <button 
+              className={`capsule-link get-started ${activeTab === 'auth' ? 'active' : ''}`}
+              onClick={() => setActiveTab('auth')}
+            >
+              <UserCircle size={18} /> Get Started
+            </button>
+          )}
         </nav>
       </div>
 
@@ -60,6 +96,8 @@ function App() {
         {activeTab === 'trees' && <TreeVisualizer />}
         {activeTab === 'graphs' && <GraphVisualizer />}
         {activeTab === 'custom' && <CustomAlgoVisualizer />}
+        {activeTab === 'about' && <AboutUs onNavigate={setActiveTab} />}
+        {activeTab === 'auth' && <Auth onNavigate={setActiveTab} />}
       </main>
     </div>
   );
