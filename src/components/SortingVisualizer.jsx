@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Play, Pause, Square, Shuffle, ArrowLeft, Clock, Layers, TrendingUp, Zap, GitMerge, ArrowUpDown, ChevronRight, Code2 } from 'lucide-react';
+import { Play, Pause, Square, Shuffle, ArrowLeft, Clock, Layers, TrendingUp, Zap, GitMerge, ArrowUpDown, ChevronRight, Code2, CheckCircle2 } from 'lucide-react';
+import { markAlgoAsCompleted } from '../firebase/progressService';
 import * as sortingAlgorithms from '../sortingAlgorithms/sortingAlgorithms';
 import './SortingVisualizer.css';
 
@@ -319,7 +320,7 @@ public class QuickSort {
   }
 };
 
-export default function SortingVisualizer({ user, onNavigate }) {
+export default function SortingVisualizer({ user, onNavigate, progress }) {
   const [selectedAlgo, setSelectedAlgo] = useState(null);
   const [array, setArray] = useState([]);
   const [arraySize, setArraySize] = useState(50);
@@ -506,6 +507,11 @@ export default function SortingVisualizer({ user, onNavigate }) {
     if (selectedAlgo === 'quick') animations = sortingAlgorithms.getQuickSortAnimations(array);
     if (selectedAlgo === 'merge') animations = sortingAlgorithms.getMergeSortAnimations(array);
     
+    // Mark as completed in Firebase
+    if (user) {
+      markAlgoAsCompleted(user.uid, 'sorting', selectedAlgo);
+    }
+    
     animateSort(animations);
   };
 
@@ -555,6 +561,12 @@ export default function SortingVisualizer({ user, onNavigate }) {
                   {data.icon}
                 </div>
                 <span className="algo-card-name">{data.name}</span>
+                {progress?.sorting?.[key] && (
+                  <div className="algo-card-status">
+                    <CheckCircle2 size={13} strokeWidth={3} className="completed-icon" />
+                    <span>Visualized</span>
+                  </div>
+                )}
               </div>
 
               <p className="algo-card-tagline">{data.tagline}</p>
