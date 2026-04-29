@@ -17,6 +17,7 @@ import { Search, House, BarChart2, GitFork, Network, Code2, UserCircle, LogOut, 
 function App() {
   const [activeTab, setActiveTab] = useState('home');
   const [user, setUser] = useState(null);
+  const [isPremium, setIsPremium] = useState(false);
   const [progress, setProgress] = useState(null);
   const [authMessage, setAuthMessage] = useState('');
   const [intendedTab, setIntendedTab] = useState(null);
@@ -30,6 +31,8 @@ function App() {
       progressUnsubscribe();
       userUnsubscribe();
       
+      setUser(currentUser);
+
       if (currentUser) {
         // Listen to progress
         progressUnsubscribe = listenToProgress(currentUser.uid, (data) => {
@@ -41,13 +44,17 @@ function App() {
         userUnsubscribe = onSnapshot(userRef, (docSnap) => {
           if (docSnap.exists()) {
             const userData = docSnap.data();
-            setUser({ ...currentUser, isPremium: userData.isPremium || false });
+            console.log('User document updated:', userData);
+            setIsPremium(userData.isPremium === true);
           } else {
-            setUser(currentUser);
+            console.log('User document does not exist yet.');
+            setIsPremium(false);
           }
+        }, (error) => {
+          console.error('Firestore onSnapshot error:', error);
         });
       } else {
-        setUser(null);
+        setIsPremium(false);
         setProgress(null);
       }
     });
@@ -113,7 +120,7 @@ function App() {
             onClick={() => {
               if (!user) {
                 handleTabChange('auth', 'You have to login first to access Custom Algorithms.', 'premium');
-              } else if (!user.isPremium) {
+              } else if (!isPremium) {
                 handleTabChange('premium');
               } else {
                 handleTabChange('custom');
@@ -127,7 +134,7 @@ function App() {
 
           {user ? (
             <div style={{ display: 'flex', gap: '0.5rem' }}>
-              {!user.isPremium && (
+              {!isPremium && (
                 <button 
                   className={`capsule-link upgrade-btn ${activeTab === 'premium' ? 'active' : ''}`}
                   onClick={() => handleTabChange('premium')}
@@ -153,14 +160,14 @@ function App() {
 
       <main className="main-content">
         {activeTab === 'home' && <Home onNavigate={handleTabChange} />}
-        {activeTab === 'sorting' && <SortingVisualizer user={user} onNavigate={handleTabChange} progress={progress} />}
-        {activeTab === 'searching' && <SearchingVisualizer user={user} onNavigate={handleTabChange} progress={progress} />}
-        {activeTab === 'trees' && <TreeVisualizer user={user} onNavigate={handleTabChange} progress={progress} />}
-        {activeTab === 'graphs' && <GraphVisualizer user={user} onNavigate={handleTabChange} progress={progress} />}
-        {activeTab === 'custom' && <CustomAlgoVisualizer user={user} onNavigate={handleTabChange} progress={progress} />}
+        {activeTab === 'sorting' && <SortingVisualizer user={user} isPremium={isPremium} onNavigate={handleTabChange} progress={progress} />}
+        {activeTab === 'searching' && <SearchingVisualizer user={user} isPremium={isPremium} onNavigate={handleTabChange} progress={progress} />}
+        {activeTab === 'trees' && <TreeVisualizer user={user} isPremium={isPremium} onNavigate={handleTabChange} progress={progress} />}
+        {activeTab === 'graphs' && <GraphVisualizer user={user} isPremium={isPremium} onNavigate={handleTabChange} progress={progress} />}
+        {activeTab === 'custom' && <CustomAlgoVisualizer user={user} isPremium={isPremium} onNavigate={handleTabChange} progress={progress} />}
         {activeTab === 'about' && <AboutUs onNavigate={handleTabChange} />}
         {activeTab === 'auth' && <Auth onNavigate={handleTabChange} authMessage={authMessage} intendedTab={intendedTab} />}
-        {activeTab === 'premium' && <Premium user={user} onNavigate={handleTabChange} />}
+        {activeTab === 'premium' && <Premium user={user} isPremium={isPremium} onNavigate={handleTabChange} />}
       </main>
     </div>
   );

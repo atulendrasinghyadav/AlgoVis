@@ -320,7 +320,7 @@ public class QuickSort {
   }
 };
 
-export default function SortingVisualizer({ user, onNavigate, progress }) {
+export default function SortingVisualizer({ user, isPremium, onNavigate, progress }) {
   const [selectedAlgo, setSelectedAlgo] = useState(null);
   const [array, setArray] = useState([]);
   const [arraySize, setArraySize] = useState(50);

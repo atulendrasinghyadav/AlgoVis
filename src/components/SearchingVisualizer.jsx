@@ -112,7 +112,7 @@ int main() {
   }
 };
 
-export default function SearchingVisualizer({ user, onNavigate, progress }) {
+export default function SearchingVisualizer({ user, isPremium, onNavigate, progress }) {
   const [selectedAlgo, setSelectedAlgo] = useState(null);
   const [array, setArray] = useState([]);
   const [arraySize, setArraySize] = useState(50);

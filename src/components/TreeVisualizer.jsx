@@ -198,7 +198,7 @@ function formatVariableBadge(variable) {
   return `${variable.name}: ${formatVariableValue(variable.value)}`;
 }
 
-export default function TreeVisualizer({ user, onNavigate, progress }) {
+export default function TreeVisualizer({ user, isPremium, onNavigate, progress }) {
   const [selectedAlgo, setSelectedAlgo] = useState(null);
   const [treeRoot, setTreeRoot] = useState(null);
   const [speedMultiplier, setSpeedMultiplier] = useState(5);

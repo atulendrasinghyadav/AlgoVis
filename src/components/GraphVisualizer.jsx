@@ -891,7 +891,7 @@ export default function GraphVisualizer({ user, onNavigate, progress }) {
               onClick={() => {
                 if (!user) {
                   onNavigate('auth', 'You have to login first before starting visualization.');
-                } else if (!user.isPremium) {
+                } else if (!isPremium) {
                   alert('Graph Algorithms are a Premium feature. Please upgrade your account to unlock them.');
                 } else {
                   setSelectedAlgo(key);
@@ -906,7 +906,7 @@ export default function GraphVisualizer({ user, onNavigate, progress }) {
               <div className="algo-card-head">
                 <div className="algo-card-icon" style={{ color: data.color }}>{data.icon}</div>
                 <span className="algo-card-name">{data.name}</span>
-                {(!user || !user.isPremium) && (
+                {(!user || !isPremium) && (
                   <div className="algo-card-status" title="Premium Feature">
                     <Crown size={15} strokeWidth={2.5} style={{ color: '#fbbf24' }} />
                   </div>
@@ -1096,6 +1096,10 @@ export default function GraphVisualizer({ user, onNavigate, progress }) {
         </aside>
         )}
       </div>
+    </div>
+  );
+}
+v>
     </div>
   );
 }

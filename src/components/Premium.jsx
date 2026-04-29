@@ -1,12 +1,36 @@
-import React, { useState } from 'react';
-import { Check, Crown, Zap, Shield, Star, ChevronRight, Loader2 } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Check, Crown, Zap, Shield, Star, ChevronRight, Loader2, RefreshCw } from 'lucide-react';
 import { processPremiumUpgrade } from '../firebase/paymentService';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../firebase/firebaseConfig';
 import './Premium.css';
 
 const RAZORPAY_KEY_ID = import.meta.env.VITE_RAZORPAY_KEY_ID;
 
-export default function Premium({ user, onNavigate }) {
+export default function Premium({ user, isPremium, onNavigate }) {
   const [processing, setProcessing] = useState(false);
+  const [checking, setChecking] = useState(false);
+
+  const handleCheckStatus = async () => {
+    if (!user) return;
+    setChecking(true);
+    try {
+      const userRef = doc(db, 'users', user.uid);
+      const docSnap = await getDoc(userRef);
+      if (docSnap.exists() && docSnap.data().isPremium) {
+        alert('Confirmed! You are a Premium member. Welcome back.');
+        onNavigate('home');
+      } else {
+        alert('Premium status not found. If you just paid, please wait a moment or contact support if the issue persists.');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Error checking status.');
+    } finally {
+      setChecking(false);
+    }
+  };
+
 
   const plans = [
     {
@@ -150,6 +174,13 @@ export default function Premium({ user, onNavigate }) {
         <span className="premium-badge">ALGOVIS PRO</span>
         <h1>Elevate Your Engineering <br /><span>Understanding</span></h1>
         <p>Unlock advanced visualization tools and custom algorithm playgrounds designed for high-performance learning.</p>
+        
+        {user && !isPremium && (
+          <button className="check-status-btn" onClick={handleCheckStatus} disabled={checking}>
+            {checking ? <Loader2 className="animate-spin" size={16} /> : <RefreshCw size={16} />}
+            Already paid? Check Status
+          </button>
+        )}
       </header>
 
       <div className="plans-grid">
@@ -184,7 +215,7 @@ export default function Premium({ user, onNavigate }) {
             <button
               className={`plan-cta ${plan.premium ? 'btn-premium' : 'btn-standard'}`}
               onClick={plan.premium ? handleUpgrade : () => onNavigate('home')}
-              disabled={!plan.premium && user?.isPremium}
+              disabled={!plan.premium && isPremium}
             >
               {plan.premium ? (
                 <>
@@ -213,5 +244,8 @@ export default function Premium({ user, onNavigate }) {
         </div>
       </section>
     </div>
+  );
+}
+   </div>
   );
 }

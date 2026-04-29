@@ -752,7 +752,7 @@ function StructuredValue({ value, varName = '', depth = 0 }) {
   return <code className="custom-var-value">{formatScalar(value)}</code>;
 }
 
-export default function CustomAlgoVisualizer({ user, onNavigate, progress }) {
+export default function CustomAlgoVisualizer({ user, isPremium, onNavigate, progress }) {
   const [language, setLanguage] = useState('javascript');
   const [codeByLanguage, setCodeByLanguage] = useState({
     javascript: DEFAULT_JS_CODE,
