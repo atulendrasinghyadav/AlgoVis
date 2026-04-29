@@ -49,7 +49,7 @@ export default function Premium({ user, isPremium, onNavigate }) {
     },
     {
       name: 'Premium',
-      price: '₹49',
+      price: '₹1',
       period: '/Lifetime',
       description: 'Unlock full power with custom algorithms and advanced features.',
       features: [
@@ -101,7 +101,7 @@ export default function Premium({ user, isPremium, onNavigate }) {
 
       const options = {
         key: RAZORPAY_KEY_ID,
-        amount: 4900, // Amount in paise (₹49.00)
+        amount: 100, // Amount in paise (₹1.00)
         currency: 'INR',
         name: 'AlgoVis Premium',
         description: 'Lifetime Access to Advanced Features',
@@ -114,7 +114,7 @@ export default function Premium({ user, isPremium, onNavigate }) {
               razorpay_payment_id: response.razorpay_payment_id,
               razorpay_order_id: response.razorpay_order_id,
               razorpay_signature: response.razorpay_signature,
-              amount: 49
+              amount: 1
             });
 
             alert('Payment Successful! Welcome to AlgoVis Premium.');
@@ -141,7 +141,7 @@ export default function Premium({ user, isPremium, onNavigate }) {
       };
 
       const rzp1 = new window.Razorpay(options);
-      
+
       rzp1.on('payment.failed', function (response) {
         console.error('Payment failed details:', response.error);
         alert(`Payment Failed: ${response.error.description}`);
@@ -174,7 +174,7 @@ export default function Premium({ user, isPremium, onNavigate }) {
         <span className="premium-badge">ALGOVIS PRO</span>
         <h1>Elevate Your Engineering <br /><span>Understanding</span></h1>
         <p>Unlock advanced visualization tools and custom algorithm playgrounds designed for high-performance learning.</p>
-        
+
         {user && !isPremium && (
           <button className="check-status-btn" onClick={handleCheckStatus} disabled={checking}>
             {checking ? <Loader2 className="animate-spin" size={16} /> : <RefreshCw size={16} />}
@@ -244,8 +244,5 @@ export default function Premium({ user, isPremium, onNavigate }) {
         </div>
       </section>
     </div>
-  );
-}
-   </div>
   );
 }
