@@ -9,7 +9,7 @@ import {
 import { Mail, Lock, User, ArrowRight, Loader2 } from 'lucide-react';
 import './Auth.css';
 
-export default function Auth({ onNavigate, authMessage }) {
+export default function Auth({ onNavigate, authMessage, intendedTab }) {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -29,7 +29,7 @@ export default function Auth({ onNavigate, authMessage }) {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         await updateProfile(userCredential.user, { displayName: fullName });
       }
-      onNavigate('home');
+      onNavigate(intendedTab || 'home');
     } catch (err) {
       setError(err.message.replace('Firebase: ', ''));
     } finally {
@@ -42,7 +42,7 @@ export default function Auth({ onNavigate, authMessage }) {
     setError('');
     try {
       await signInWithPopup(auth, googleProvider);
-      onNavigate('home');
+      onNavigate(intendedTab || 'home');
     } catch (err) {
       setError(err.message.replace('Firebase: ', ''));
     } finally {

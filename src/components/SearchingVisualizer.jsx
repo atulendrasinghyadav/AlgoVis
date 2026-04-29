@@ -298,13 +298,7 @@ export default function SearchingVisualizer({ user, onNavigate, progress }) {
             <div
               key={key}
               className={`algo-card ${hoveredCard === key ? 'hovered' : ''}`}
-              onClick={() => {
-                if (!user) {
-                  onNavigate('auth', 'You have to login first before starting visualization.');
-                } else {
-                  setSelectedAlgo(key);
-                }
-              }}
+              onClick={() => setSelectedAlgo(key)}
               onMouseEnter={() => setHoveredCard(key)}
               onMouseLeave={() => setHoveredCard(null)}
               style={{ '--card-accent': data.color }}

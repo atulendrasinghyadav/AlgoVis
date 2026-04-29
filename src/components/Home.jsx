@@ -257,10 +257,10 @@ export default function Home({ onNavigate }) {
 
             <div className="footer-column">
               <h4>Resources</h4>
+              <a href="#" onClick={(e) => { e.preventDefault(); onNavigate('premium'); }}>Pricing</a>
               <a href="#">Documentation</a>
               <a href="#">API Reference</a>
               <a href="#">Community</a>
-              <a href="#">Blog</a>
             </div>
 
             <div className="footer-column">

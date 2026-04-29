@@ -7,32 +7,47 @@ import CustomAlgoVisualizer from './components/CustomAlgoVisualizer';
 import Home from './components/Home';
 import AboutUs from './components/AboutUs';
 import Auth from './components/Auth';
-import { auth } from './firebase/firebaseConfig';
+import Premium from './components/Premium';
+import { auth, db } from './firebase/firebaseConfig';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { doc, onSnapshot } from 'firebase/firestore';
 import { listenToProgress } from './firebase/progressService';
-import { Search, House, BarChart2, GitFork, Network, Code2, UserCircle, LogOut } from 'lucide-react';
+import { Search, House, BarChart2, GitFork, Network, Code2, UserCircle, LogOut, Crown } from 'lucide-react';
 
 function App() {
   const [activeTab, setActiveTab] = useState('home');
   const [user, setUser] = useState(null);
   const [progress, setProgress] = useState(null);
   const [authMessage, setAuthMessage] = useState('');
+  const [intendedTab, setIntendedTab] = useState(null);
 
   React.useEffect(() => {
     let progressUnsubscribe = () => {};
+    let userUnsubscribe = () => {};
 
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-      
-      // Clean up previous progress listener
+      // Clean up previous listeners
       progressUnsubscribe();
+      userUnsubscribe();
       
       if (currentUser) {
-        // Start listening to progress for the new user
+        // Listen to progress
         progressUnsubscribe = listenToProgress(currentUser.uid, (data) => {
           setProgress(data);
         });
+
+        // Listen to user document for premium status
+        const userRef = doc(db, 'users', currentUser.uid);
+        userUnsubscribe = onSnapshot(userRef, (docSnap) => {
+          if (docSnap.exists()) {
+            const userData = docSnap.data();
+            setUser({ ...currentUser, isPremium: userData.isPremium || false });
+          } else {
+            setUser(currentUser);
+          }
+        });
       } else {
+        setUser(null);
         setProgress(null);
       }
     });
@@ -40,6 +55,7 @@ function App() {
     return () => {
       unsubscribe();
       progressUnsubscribe();
+      userUnsubscribe();
     };
   }, []);
 
@@ -52,9 +68,10 @@ function App() {
     }
   };
 
-  const handleTabChange = (tab, message = '') => {
+  const handleTabChange = (tab, message = '', nextTab = null) => {
     setActiveTab(tab);
     setAuthMessage(message);
+    setIntendedTab(nextTab);
   };
 
   return (
@@ -93,17 +110,36 @@ function App() {
           </button>
           <button 
             className={`capsule-link ${activeTab === 'custom' ? 'active' : ''}`}
-            onClick={() => handleTabChange('custom')}
+            onClick={() => {
+              if (!user) {
+                handleTabChange('auth', 'You have to login first to access Custom Algorithms.', 'premium');
+              } else if (!user.isPremium) {
+                handleTabChange('premium');
+              } else {
+                handleTabChange('custom');
+              }
+            }}
           >
-            <Code2 size={18} /> Custom Algo
+            <Crown size={18} className="premium-crown-icon" style={{ color: '#fbbf24' }} /> Custom Algo
           </button>
           
           <div className="capsule-divider"></div>
 
           {user ? (
-            <button className="capsule-link logout" onClick={handleLogout}>
-              <LogOut size={18} /> Logout
-            </button>
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+              {!user.isPremium && (
+                <button 
+                  className={`capsule-link upgrade-btn ${activeTab === 'premium' ? 'active' : ''}`}
+                  onClick={() => handleTabChange('premium')}
+                  style={{ color: '#fbbf24', border: '1px solid rgba(251, 191, 36, 0.3)' }}
+                >
+                  <Crown size={18} /> Upgrade
+                </button>
+              )}
+              <button className="capsule-link logout" onClick={handleLogout}>
+                <LogOut size={18} /> Logout
+              </button>
+            </div>
           ) : (
             <button 
               className={`capsule-link get-started ${activeTab === 'auth' ? 'active' : ''}`}
@@ -123,7 +159,8 @@ function App() {
         {activeTab === 'graphs' && <GraphVisualizer user={user} onNavigate={handleTabChange} progress={progress} />}
         {activeTab === 'custom' && <CustomAlgoVisualizer user={user} onNavigate={handleTabChange} progress={progress} />}
         {activeTab === 'about' && <AboutUs onNavigate={handleTabChange} />}
-        {activeTab === 'auth' && <Auth onNavigate={handleTabChange} authMessage={authMessage} />}
+        {activeTab === 'auth' && <Auth onNavigate={handleTabChange} authMessage={authMessage} intendedTab={intendedTab} />}
+        {activeTab === 'premium' && <Premium user={user} onNavigate={handleTabChange} />}
       </main>
     </div>
   );

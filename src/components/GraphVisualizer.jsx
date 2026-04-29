@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Play, Pause, Square, ArrowLeft, Clock, Route, Waypoints, Waves, Mountain, Eraser, Brush, Flag, LocateFixed, ChevronRight, RotateCcw, Trash2, Shuffle, Code2, CheckCircle2 } from 'lucide-react';
+import { Play, Pause, Square, ArrowLeft, Clock, Route, Waypoints, Waves, Mountain, Eraser, Brush, Flag, LocateFixed, ChevronRight, RotateCcw, Trash2, Shuffle, Code2, CheckCircle2, Crown } from 'lucide-react';
 import { markAlgoAsCompleted } from '../firebase/progressService';
 import { runAStar, runBFS, runDFS, runDijkstra } from '../graphAlgorithms/pathfindingAlgorithms';
 import './GraphVisualizer.css';
@@ -891,6 +891,8 @@ export default function GraphVisualizer({ user, onNavigate, progress }) {
               onClick={() => {
                 if (!user) {
                   onNavigate('auth', 'You have to login first before starting visualization.');
+                } else if (!user.isPremium) {
+                  alert('Graph Algorithms are a Premium feature. Please upgrade your account to unlock them.');
                 } else {
                   setSelectedAlgo(key);
                 }
@@ -904,6 +906,11 @@ export default function GraphVisualizer({ user, onNavigate, progress }) {
               <div className="algo-card-head">
                 <div className="algo-card-icon" style={{ color: data.color }}>{data.icon}</div>
                 <span className="algo-card-name">{data.name}</span>
+                {(!user || !user.isPremium) && (
+                  <div className="algo-card-status" title="Premium Feature">
+                    <Crown size={15} strokeWidth={2.5} style={{ color: '#fbbf24' }} />
+                  </div>
+                )}
                 {progress?.graphs?.[key] && (
                   <div className="algo-card-status">
                     <CheckCircle2 size={13} strokeWidth={3} className="completed-icon" />
