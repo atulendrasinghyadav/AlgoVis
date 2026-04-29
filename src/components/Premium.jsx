@@ -1,8 +1,13 @@
-import React from 'react';
-import { Check, Crown, Zap, Shield, Star, ChevronRight } from 'lucide-react';
+import React, { useState } from 'react';
+import { Check, Crown, Zap, Shield, Star, ChevronRight, Loader2 } from 'lucide-react';
+import { processPremiumUpgrade } from '../firebase/paymentService';
 import './Premium.css';
 
+const RAZORPAY_KEY_ID = import.meta.env.VITE_RAZORPAY_KEY_ID;
+
 export default function Premium({ user, onNavigate }) {
+  const [processing, setProcessing] = useState(false);
+
   const plans = [
     {
       name: 'Standard',
@@ -21,7 +26,7 @@ export default function Premium({ user, onNavigate }) {
     {
       name: 'Premium',
       price: '₹49',
-      period: ' one-time',
+      period: '/Lifetime',
       description: 'Unlock full power with custom algorithms and advanced features.',
       features: [
         'Everything in Standard',
@@ -37,18 +42,95 @@ export default function Premium({ user, onNavigate }) {
     }
   ];
 
-  const handleUpgrade = () => {
+  const loadRazorpayScript = () => {
+    return new Promise((resolve) => {
+      const script = document.createElement('script');
+      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.body.appendChild(script);
+    });
+  };
+
+  const handleUpgrade = async () => {
     if (!user) {
       onNavigate('auth', 'Please login to upgrade your account.', 'premium');
-    } else {
-      // In a real app, this would trigger Stripe or another payment gateway
-      alert('Redirecting to secure payment gateway...');
+      return;
+    }
+
+    setProcessing(true);
+
+    try {
+      const isLoaded = await loadRazorpayScript();
+
+      if (!isLoaded) {
+        alert('Razorpay SDK failed to load. Are you online?');
+        setProcessing(false);
+        return;
+      }
+
+      // In a real production app, you should create an order on your server first.
+      // Here we use the direct checkout for demonstration.
+      const options = {
+        key: RAZORPAY_KEY_ID,
+        amount: 4900, // Amount in paise (₹49.00)
+        currency: 'INR',
+        name: 'AlgoVis Premium',
+        description: 'Lifetime Access to Advanced Features',
+        image: '/AlgoVis.png',
+        handler: async function (response) {
+          try {
+            setProcessing(true);
+            // Process the payment in Firebase
+            await processPremiumUpgrade(user.uid, {
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_signature: response.razorpay_signature,
+              amount: 49
+            });
+
+            alert('Payment Successful! Welcome to AlgoVis Premium.');
+            onNavigate('home');
+          } catch (error) {
+            console.error('Payment processing failed:', error);
+            alert('Something went wrong while upgrading your account. Please contact support.');
+          } finally {
+            setProcessing(false);
+          }
+        },
+        prefill: {
+          name: user.displayName || '',
+          email: user.email || '',
+        },
+        theme: {
+          color: '#eab308',
+        },
+        modal: {
+          ondismiss: function () {
+            setProcessing(false);
+          }
+        }
+      };
+
+      const rzp1 = new window.Razorpay(options);
+      rzp1.open();
+    } catch (error) {
+      console.error('Razorpay Error:', error);
+      alert('Failed to initiate payment. Please try again.');
+      setProcessing(false);
     }
   };
 
   return (
     <div className="premium-container">
+      {processing && (
+        <div className="payment-overlay">
+          <Loader2 className="animate-spin" size={48} color="#eab308" />
+          <p>Processing Secure Payment...</p>
+        </div>
+      )}
       <div className="premium-background">
+
         <div className="glow-circle glow-1"></div>
         <div className="glow-circle glow-2"></div>
       </div>
@@ -63,7 +145,7 @@ export default function Premium({ user, onNavigate }) {
         {plans.map((plan, idx) => (
           <div key={idx} className={`plan-card ${plan.premium ? 'premium-card' : ''} ${plan.popular ? 'popular' : ''}`}>
             {plan.popular && <div className="popular-badge">Most Popular</div>}
-            
+
             <div className="plan-icon">
               {plan.premium ? <Crown size={32} color="#fbbf24" /> : <Star size={32} color="#94a3b8" />}
             </div>
@@ -88,7 +170,7 @@ export default function Premium({ user, onNavigate }) {
               ))}
             </ul>
 
-            <button 
+            <button
               className={`plan-cta ${plan.premium ? 'btn-premium' : 'btn-standard'}`}
               onClick={plan.premium ? handleUpgrade : () => onNavigate('home')}
               disabled={!plan.premium && user?.isPremium}
