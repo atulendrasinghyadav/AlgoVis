@@ -1,7 +1,7 @@
 import { db } from './firebaseConfig';
 import { 
   doc, 
-  updateDoc, 
+  setDoc, 
   collection, 
   addDoc, 
   serverTimestamp 
@@ -31,13 +31,14 @@ export const processPremiumUpgrade = async (userId, paymentData) => {
       timestamp: serverTimestamp(),
     });
 
-    // 2. Upgrade the user's status in their profile
-    await updateDoc(userRef, {
+    // 2. Upgrade the user's status in their profile (using setDoc with merge)
+    await setDoc(userRef, {
       isPremium: true,
       premiumType: 'lifetime',
       premiumSince: serverTimestamp(),
-      lastPaymentId: paymentData.razorpay_payment_id
-    });
+      lastPaymentId: paymentData.razorpay_payment_id,
+      updatedAt: serverTimestamp()
+    }, { merge: true });
 
     return { success: true };
   } catch (error) {

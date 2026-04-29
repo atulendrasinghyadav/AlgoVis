@@ -64,13 +64,17 @@ export default function Premium({ user, onNavigate }) {
       const isLoaded = await loadRazorpayScript();
 
       if (!isLoaded) {
-        alert('Razorpay SDK failed to load. Are you online?');
+        alert('Razorpay SDK failed to load. Please check your internet connection.');
         setProcessing(false);
         return;
       }
 
-      // In a real production app, you should create an order on your server first.
-      // Here we use the direct checkout for demonstration.
+      if (!RAZORPAY_KEY_ID) {
+        alert('Razorpay Key is missing. Please check your environment variables.');
+        setProcessing(false);
+        return;
+      }
+
       const options = {
         key: RAZORPAY_KEY_ID,
         amount: 4900, // Amount in paise (₹49.00)
@@ -93,13 +97,13 @@ export default function Premium({ user, onNavigate }) {
             onNavigate('home');
           } catch (error) {
             console.error('Payment processing failed:', error);
-            alert('Something went wrong while upgrading your account. Please contact support.');
+            alert(`Database Error: ${error.message}`);
           } finally {
             setProcessing(false);
           }
         },
         prefill: {
-          name: user.displayName || '',
+          name: user.displayName || 'User',
           email: user.email || '',
         },
         theme: {
@@ -113,10 +117,17 @@ export default function Premium({ user, onNavigate }) {
       };
 
       const rzp1 = new window.Razorpay(options);
+      
+      rzp1.on('payment.failed', function (response) {
+        console.error('Payment failed details:', response.error);
+        alert(`Payment Failed: ${response.error.description}`);
+        setProcessing(false);
+      });
+
       rzp1.open();
     } catch (error) {
       console.error('Razorpay Error:', error);
-      alert('Failed to initiate payment. Please try again.');
+      alert(`System Error: ${error.message}`);
       setProcessing(false);
     }
   };
