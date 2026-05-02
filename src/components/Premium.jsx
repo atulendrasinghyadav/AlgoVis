@@ -148,6 +148,7 @@ export default function Premium({ user, isPremium, onNavigate }) {
         setProcessing(false);
       });
 
+      console.log('Opening Razorpay modal with amount (paise):', options.amount);
       rzp1.open();
     } catch (error) {
       console.error('Razorpay Error:', error);
