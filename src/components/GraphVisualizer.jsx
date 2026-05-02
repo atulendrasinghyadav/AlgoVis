@@ -50,8 +50,8 @@ const ALGO_DATA = {
   }
 };
 
-  const CODE_SNIPPETS = {
-    bfs: {
+const CODE_SNIPPETS = {
+  bfs: {
     cpp: `#include <iostream>
   #include <vector>
   #include <queue>
@@ -167,8 +167,8 @@ const ALGO_DATA = {
       System.out.println("Shortest steps (BFS): " + dist[end.r][end.c]);
     }
   }`
-    },
-    dfs: {
+  },
+  dfs: {
     cpp: `#include <iostream>
   #include <vector>
   #include <stack>
@@ -286,8 +286,8 @@ const ALGO_DATA = {
       System.out.println(found ? "Path exists (DFS)" : "No path (DFS)");
     }
   }`
-    },
-    dijkstra: {
+  },
+  dijkstra: {
     cpp: `#include <iostream>
   #include <vector>
   #include <queue>
@@ -416,8 +416,8 @@ const ALGO_DATA = {
       else System.out.println("Minimum cost (Dijkstra): " + dist[er][eCol]);
     }
   }`
-    },
-    astar: {
+  },
+  astar: {
     cpp: `#include <iostream>
   #include <vector>
   #include <queue>
@@ -558,8 +558,8 @@ const ALGO_DATA = {
       else System.out.println("Minimum cost (A*): " + gScore[er][eCol]);
     }
   }`
-    }
-  };
+  }
+};
 
 function createCell(row, col, startPos, endPos) {
   return {
@@ -1077,29 +1077,25 @@ export default function GraphVisualizer({ user, onNavigate, progress }) {
         </div>
 
         {showCodePanel && (
-        <aside className="panel graph-code-panel">
-          <div className="graph-code-header">
-            <div>
-              <p className="graph-code-kicker">Complete Program</p>
-              <h3>{currentAlgo.name} - {codeLanguage === 'cpp' ? 'C++' : 'Java'}</h3>
-              <p className="graph-code-desc">Includes user input format, graph construction, and final output in a beginner-friendly style.</p>
+          <aside className="panel graph-code-panel">
+            <div className="graph-code-header">
+              <div>
+                <p className="graph-code-kicker">Complete Program</p>
+                <h3>{currentAlgo.name} - {codeLanguage === 'cpp' ? 'C++' : 'Java'}</h3>
+                <p className="graph-code-desc">Includes user input format, graph construction, and final output in a beginner-friendly style.</p>
+              </div>
+              <div className="graph-code-tabs">
+                <button className={`graph-code-tab ${codeLanguage === 'cpp' ? 'active' : ''}`} onClick={() => setCodeLanguage('cpp')}>C++</button>
+                <button className={`graph-code-tab ${codeLanguage === 'java' ? 'active' : ''}`} onClick={() => setCodeLanguage('java')}>Java</button>
+              </div>
             </div>
-            <div className="graph-code-tabs">
-              <button className={`graph-code-tab ${codeLanguage === 'cpp' ? 'active' : ''}`} onClick={() => setCodeLanguage('cpp')}>C++</button>
-              <button className={`graph-code-tab ${codeLanguage === 'java' ? 'active' : ''}`} onClick={() => setCodeLanguage('java')}>Java</button>
-            </div>
-          </div>
 
-          <div className="graph-code-shell">
-            <pre className="graph-code-block"><code>{currentCode}</code></pre>
-          </div>
-        </aside>
+            <div className="graph-code-shell">
+              <pre className="graph-code-block"><code>{currentCode}</code></pre>
+            </div>
+          </aside>
         )}
       </div>
-    </div>
-  );
-}
-v>
     </div>
   );
 }
