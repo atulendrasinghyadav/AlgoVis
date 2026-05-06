@@ -582,7 +582,7 @@ function cloneGrid(grid) {
   return grid.map((r) => r.map((c) => ({ ...c })));
 }
 
-export default function GraphVisualizer({ user, onNavigate, progress }) {
+export default function GraphVisualizer({ user, isPremium, onNavigate, progress }) {
   const [selectedAlgo, setSelectedAlgo] = useState(null);
   const [hoveredCard, setHoveredCard] = useState(null);
   const [speedMultiplier, setSpeedMultiplier] = useState(6);

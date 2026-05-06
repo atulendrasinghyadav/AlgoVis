@@ -44,7 +44,7 @@ export default function Premium({ user, isPremium, onNavigate }) {
         'Frame-by-frame execution control',
         'Adjustable animation speeds',
       ],
-      cta: 'Current Plan',
+      cta: isPremium ? 'Plan Active' : 'Current Plan',
       premium: false,
     },
     {
@@ -60,7 +60,7 @@ export default function Premium({ user, isPremium, onNavigate }) {
         'Progress tracking & Analytics',
         'Priority support & updates',
       ],
-      cta: 'Upgrade to Premium',
+      cta: isPremium ? 'Current Plan' : 'Upgrade to Premium',
       premium: true,
       popular: true,
     }
@@ -77,6 +77,7 @@ export default function Premium({ user, isPremium, onNavigate }) {
   };
 
   const handleUpgrade = async () => {
+    if (isPremium) return;
     if (!user) {
       onNavigate('auth', 'Please login to upgrade your account.', 'premium');
       return;
@@ -215,12 +216,12 @@ export default function Premium({ user, isPremium, onNavigate }) {
 
             <button
               className={`plan-cta ${plan.premium ? 'btn-premium' : 'btn-standard'}`}
-              onClick={plan.premium ? handleUpgrade : () => onNavigate('home')}
-              disabled={!plan.premium && isPremium}
+              onClick={plan.premium && !isPremium ? handleUpgrade : () => onNavigate('home')}
+              disabled={plan.premium ? isPremium : !isPremium}
             >
               {plan.premium ? (
                 <>
-                  {plan.cta} <ChevronRight size={18} />
+                  {plan.cta} {!isPremium && <ChevronRight size={18} />}
                 </>
               ) : (
                 plan.cta
