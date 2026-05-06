@@ -8,6 +8,7 @@ import Home from './components/Home';
 import AboutUs from './components/AboutUs';
 import Auth from './components/Auth';
 import Premium from './components/Premium';
+import Profile from './components/Profile';
 import { auth, db } from './firebase/firebaseConfig';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { doc, onSnapshot } from 'firebase/firestore';
@@ -143,8 +144,11 @@ function App() {
                   <Crown size={18} /> Upgrade
                 </button>
               )}
-              <button className="capsule-link logout" onClick={handleLogout}>
-                <LogOut size={18} /> Logout
+              <button 
+                className={`capsule-link profile-btn ${activeTab === 'profile' ? 'active' : ''}`} 
+                onClick={() => handleTabChange('profile')}
+              >
+                <UserCircle size={18} /> Profile
               </button>
             </div>
           ) : (
@@ -168,6 +172,7 @@ function App() {
         {activeTab === 'about' && <AboutUs onNavigate={handleTabChange} />}
         {activeTab === 'auth' && <Auth onNavigate={handleTabChange} authMessage={authMessage} intendedTab={intendedTab} />}
         {activeTab === 'premium' && <Premium user={user} isPremium={isPremium} onNavigate={handleTabChange} />}
+        {activeTab === 'profile' && <Profile user={user} isPremium={isPremium} progress={progress} onNavigate={handleTabChange} />}
       </main>
     </div>
   );
