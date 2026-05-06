@@ -157,6 +157,25 @@
   margin-bottom: 0;
 }
 
+.dev-socials {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.social-link {
+  color: #a1a1aa;
+  transition: color 0.2s ease, transform 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.social-link:hover {
+  color: #eab308;
+  transform: translateY(-2px);
+}
+
 @media (max-width: 768px) {
   .developer-grid {
     grid-template-columns: 1fr;

@@ -1,6 +1,25 @@
 import React from 'react';
-import { ArrowLeft, Users, Zap, Terminal } from 'lucide-react';
+import { ArrowLeft, Users, Zap, Terminal, Github, Linkedin } from 'lucide-react';
 import './AboutUs.css';
+
+const developers = [
+  {
+    name: 'Atulendra Singh Yadav',
+    initials: 'AS',
+    role: 'Co-Creator & Core Engineer',
+    description: 'Passionate about front-end architecture and crafting smooth, high-frame-rate visualizations.',
+    github: 'https://github.com/atulendrasinghyadav',
+    linkedin: 'https://www.linkedin.com/in/atulendra-singh-yadav'
+  },
+  {
+    name: 'Vidushi Singh',
+    initials: 'VS',
+    role: 'Co-Creator & Systems Engineer',
+    description: 'Focused on the state-management engines and implementing the robust data-structure models.',
+    github: 'https://github.com/vidushi-singh11',
+    linkedin: 'https://www.linkedin.com/in/vidushi-singh-493097326/'
+  }
+];
 
 export default function AboutUs({ onNavigate }) {
   return (
@@ -30,7 +49,7 @@ export default function AboutUs({ onNavigate }) {
           <div className="section-icon"><Terminal color="#eab308" /></div>
           <h2>How It Works</h2>
           <p>
-            Our physics and animation engine breaks down complex operations—like sorting through pointers, inserting into trees, or finding the shortest path across a graph—into discrete, traceable frames. 
+            Our physics and animation engine breaks down complex operations—like sorting through pointers, inserting into trees, or finding the shortest path across a graph—into discrete, traceable frames.
           </p>
           <p>
             By controlling the execution speed, tweaking the array bounds, or stepping through the execution manually, users directly interface with the structural mechanics of an algorithm. Every component connects the raw, underlying mathematical operations directly to the visual element rendered on your screen.
@@ -41,29 +60,28 @@ export default function AboutUs({ onNavigate }) {
           <div className="section-icon"><Users color="#eab308" /></div>
           <h2>Meet the Developers</h2>
           <p>This project is proudly built and maintained by two passionate software engineers dedicated to accessible education:</p>
-          
-          <div className="developer-grid">
-            <div className="developer-card">
-              <div className="dev-avatar">
-                <span>AS</span>
-              </div>
-              <div className="dev-info">
-                <h3>Atulendra Singh Yadav</h3>
-                <span className="dev-role">Co-Creator & Core Engineer</span>
-                <p>Passionate about front-end architecture and crafting smooth, high-frame-rate visualizations.</p>
-              </div>
-            </div>
 
-            <div className="developer-card">
-              <div className="dev-avatar">
-                <span>SJ</span>
+          <div className="developer-grid">
+            {developers.map((dev, idx) => (
+              <div className="developer-card" key={idx}>
+                <div className="dev-avatar">
+                  <span>{dev.initials}</span>
+                </div>
+                <div className="dev-info">
+                  <h3>{dev.name}</h3>
+                  <span className="dev-role">{dev.role}</span>
+                  <p>{dev.description}</p>
+                  <div className="dev-socials">
+                    <a href={dev.github} target="_blank" rel="noopener noreferrer" className="social-link" aria-label={`${dev.name} GitHub`}>
+                      <Github size={20} />
+                    </a>
+                    <a href={dev.linkedin} target="_blank" rel="noopener noreferrer" className="social-link" aria-label={`${dev.name} LinkedIn`}>
+                      <Linkedin size={20} />
+                    </a>
+                  </div>
+                </div>
               </div>
-              <div className="dev-info">
-                <h3>Developer Two</h3>
-                <span className="dev-role">Co-Creator & Systems Engineer</span>
-                <p>Focused on the state-management engines and implementing the robust data-structure models.</p>
-              </div>
-            </div>
+            ))}
           </div>
         </section>
 
