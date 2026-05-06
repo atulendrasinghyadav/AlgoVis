@@ -24,7 +24,7 @@ export const processPremiumUpgrade = async (userId, paymentData) => {
       userId,
       razorpayPaymentId: paymentData.razorpay_payment_id,
       razorpayOrderId: paymentData.razorpay_order_id || 'direct_payment',
-      amount: paymentData.amount || 1,
+      amount: paymentData.amount || 49,
       currency: 'INR',
       status: 'success',
       planType: 'lifetime',

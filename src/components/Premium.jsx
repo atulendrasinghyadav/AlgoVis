@@ -6,6 +6,8 @@ import { db } from '../firebase/firebaseConfig';
 import './Premium.css';
 
 const RAZORPAY_KEY_ID = import.meta.env.VITE_RAZORPAY_KEY_ID;
+const PREMIUM_PRICE_INR = 49;
+const PREMIUM_PRICE_PAISE = PREMIUM_PRICE_INR * 100;
 
 export default function Premium({ user, isPremium, onNavigate }) {
   const [processing, setProcessing] = useState(false);
@@ -49,7 +51,7 @@ export default function Premium({ user, isPremium, onNavigate }) {
     },
     {
       name: 'Premium',
-      price: '₹1',
+      price: `₹${PREMIUM_PRICE_INR}`,
       period: '/Lifetime',
       description: 'Unlock full power with custom algorithms and advanced features.',
       features: [
@@ -102,7 +104,7 @@ export default function Premium({ user, isPremium, onNavigate }) {
 
       const options = {
         key: RAZORPAY_KEY_ID,
-        amount: 100, // Amount in paise (₹1.00)
+        amount: PREMIUM_PRICE_PAISE,
         currency: 'INR',
         name: 'AlgoVis Premium',
         description: 'Lifetime Access to Advanced Features',
@@ -115,7 +117,7 @@ export default function Premium({ user, isPremium, onNavigate }) {
               razorpay_payment_id: response.razorpay_payment_id,
               razorpay_order_id: response.razorpay_order_id,
               razorpay_signature: response.razorpay_signature,
-              amount: 1
+              amount: PREMIUM_PRICE_INR
             });
 
             alert('Payment Successful! Welcome to AlgoVis Premium.');
