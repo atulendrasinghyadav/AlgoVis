@@ -22,13 +22,13 @@ See how algorithms find specific data within a collection.
 - **Linear Search**: Sequential scan of the array.
 - **Binary Search**: Fast searching in sorted arrays using division.
 
-### 🌳 Tree Visualizer
+### 🌳 Tree Visualizer *(Premium)*
 Interactive Binary Search Tree (BST) operations.
 - **Traversals**: In-order, Pre-order, and Post-order visualizations.
 - **BST Operations**: Step-by-step Search, Insert, and Delete (with successor logic).
-- **Auto-Balancing Logic**: Visualizes tree structure dynamically.
+- **Dynamic Layout**: Node positions are recomputed live as the tree grows or shrinks.
 
-### 🕸️ Graph Visualizer
+### 🕸️ Graph Visualizer *(Premium)*
 Pathfinding and traversal on a grid-based graph.
 - **BFS (Breadth-First Search)**: Shortest path in unweighted graphs.
 - **DFS (Depth-First Search)**: Explores as far as possible along each branch.
@@ -37,16 +37,18 @@ Pathfinding and traversal on a grid-based graph.
 - **Interactive Grid**: Add walls, adjust weights, and set start/end points.
 
 ### 💎 Premium Features
+- **Tree Algorithms**: All BST operations and traversals.
+- **Graph Algorithms**: BFS, DFS, Dijkstra, and A* on the interactive grid.
 - **Custom Algorithm Visualizer**: Write and test your own logic using our visualization engine.
-- **Progress Tracking**: Save your learning journey and track completed algorithms.
-- **Ad-free Experience**: Focus entirely on learning.
+- **Profile & Progress Tracking**: Account profile with access level, badges, and per-algorithm completion history in Firestore.
 
 ## 🛠️ Tech Stack
 
-- **Frontend**: React 19, Vite
+- **Frontend**: React 19 SPA built with Vite
 - **Styling**: Vanilla CSS (Custom UI components)
 - **Icons**: Lucide React
-- **Backend/Database**: Firebase (Authentication, Firestore)
+- **Backend Services**: Firebase BaaS (Authentication, Firestore for progress & premium flags)
+- **Payments**: Razorpay Checkout (one-time lifetime upgrade)
 - **State Management**: React Hooks (useState, useEffect)
 
 ## 📁 Project Structure
@@ -110,6 +112,10 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
+
+## 📄 License
+
+Distributed under the MIT License. See [`LICENSE`](./LICENSE) for more information.
 
 ---
 Built with ❤️ by Atulendra & Vidushi
