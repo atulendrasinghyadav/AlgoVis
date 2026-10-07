@@ -5,7 +5,7 @@
 AlgoVis is a comprehensive, interactive web application designed to help students and developers visualize and understand complex algorithms and data structures. Built with a modern tech stack, it provides a step-by-step visual representation of how algorithms operate in real-time.
 
 ## 🚀 Live Demo
-[Insert Live Link Here - e.g., https://algovis-pro.web.app]
+[https://algo-vis-kappa.vercel.app/]
 
 ## ✨ Features
 
