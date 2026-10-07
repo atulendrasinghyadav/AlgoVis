@@ -42,7 +42,6 @@ export default function Premium({ user, isPremium, onNavigate }) {
       features: [
         'Access to all Sorting algorithms',
         'Access to all Searching algorithms',
-        'Basic Tree & Graph visualizers',
         'Frame-by-frame execution control',
         'Adjustable animation speeds',
       ],
@@ -57,6 +56,7 @@ export default function Premium({ user, isPremium, onNavigate }) {
       features: [
         'Everything in Standard',
         'Custom Algorithm Visualizer',
+        'All Tree algorithms (BST ops & traversals)',
         'Advanced Pathfinding (Dijkstra, A*)',
         'Complex Data Structure support',
         'Progress tracking & Analytics',

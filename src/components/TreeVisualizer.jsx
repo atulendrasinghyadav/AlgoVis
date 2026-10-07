@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Play, Pause, Square, Shuffle, ArrowLeft, Clock, CornerDownRight, Trash2, Crosshair, FastForward, Navigation, Layers, ChevronRight, Code2, CheckCircle2 } from 'lucide-react';
+import { Play, Pause, Square, Shuffle, ArrowLeft, Clock, CornerDownRight, Trash2, Crosshair, FastForward, Navigation, Layers, ChevronRight, Code2, CheckCircle2, Crown } from 'lucide-react';
 import { markAlgoAsCompleted } from '../firebase/progressService';
 import * as treeAlgorithms from '../treeAlgorithms/treeAlgorithms';
 import './TreeVisualizer.css';
@@ -513,7 +513,15 @@ export default function TreeVisualizer({ user, isPremium, onNavigate, progress }
             <div
               key={key}
               className={`algo-card ${hoveredCard === key ? 'hovered' : ''}`}
-              onClick={() => setSelectedAlgo(key)}
+              onClick={() => {
+                if (!user) {
+                  onNavigate('auth', 'You have to login first before starting visualization.');
+                } else if (!isPremium) {
+                  onNavigate('premium');
+                } else {
+                  setSelectedAlgo(key);
+                }
+              }}
               onMouseEnter={() => setHoveredCard(key)}
               onMouseLeave={() => setHoveredCard(null)}
               style={{ '--card-accent': data.color }}
@@ -522,6 +530,11 @@ export default function TreeVisualizer({ user, isPremium, onNavigate, progress }
               <div className="algo-card-head">
                 <div className="algo-card-icon" style={{ color: data.color }}>{data.icon}</div>
                 <span className="algo-card-name">{data.name}</span>
+                {(!user || !isPremium) && (
+                  <div className="algo-card-status" title="Premium Feature">
+                    <Crown size={15} strokeWidth={2.5} style={{ color: '#fbbf24' }} />
+                  </div>
+                )}
                 {progress?.trees?.[key] && (
                   <div className="algo-card-status">
                     <CheckCircle2 size={13} strokeWidth={3} className="completed-icon" />
@@ -538,7 +551,11 @@ export default function TreeVisualizer({ user, isPremium, onNavigate, progress }
                 </div>
               </div>
               <div className="algo-card-cta">
-                <span>Visualize</span> <ChevronRight size={16} />
+                {!user || !isPremium ? (
+                  <span><Crown size={15} strokeWidth={2.5} style={{ color: '#fbbf24' }} /> Unlock with Pro</span>
+                ) : (
+                  <span>Visualize</span>
+                )}{' '}<ChevronRight size={16} />
               </div>
             </div>
           ))}
